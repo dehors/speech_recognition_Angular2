@@ -12,7 +12,7 @@ export class AppComponent {
   
   constructor(private speech:SpeechRecognitionService){
     this.speech.record('es_ES')
-      .subscribe(e => console.log(e));
+      .subscribe(e => this.title = e);
   }
   
 }

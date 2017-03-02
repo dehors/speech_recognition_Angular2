@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable,NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 
 interface IWindow extends Window{
@@ -8,7 +8,7 @@ interface IWindow extends Window{
 @Injectable()
 export class SpeechRecognitionService {
 
-  constructor() { }
+  constructor(private zone: NgZone) { }
   
   record(language:string): Observable<string>{
     return Observable.create(observer =>{
@@ -17,7 +17,7 @@ export class SpeechRecognitionService {
       recognition.continuous = true;
       recognition.interimResults = true;
 
-      recognition.onresult = e => observer.next(e);
+      recognition.onresult = e => this.zone.run(()=> observer.next(e.results.item(e.results.length -1).item(0).transcript));
       recognition.onerror = e => observer.error(e);
       recognition.onend = () => observer.complete();
       recognition.lang = language;
